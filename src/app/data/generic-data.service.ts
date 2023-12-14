@@ -28,11 +28,23 @@ export abstract class GenericDataService<T> {
       );
   }
 
-  public getByUuid(uuid: string): Observable<T> {
+  // public getByUuid(uuid: string): Observable<T> {
+  //   return this.httpClient
+  //     .get<T>(`${this.apiUrl}/${uuid}`)
+  //     .pipe(
+  //       map((result: any) => new this.tConstructor(result.payload as Partial<T>))
+  //     );
+  // }
+
+  public delete(uuid: string): Observable<ApiResponse<T>> {
+    debugger;
     return this.httpClient
-      .get<T>(`${this.apiUrl}/${uuid}`)
+      .delete(`${this.apiUrl}/${uuid}`)
       .pipe(
-        map((result: any) => new this.tConstructor(result.payload as Partial<T>))
+        map((result: any) => {
+          let response = result as ApiResponse<T>;
+          return response;
+        })
       );
   }
 }

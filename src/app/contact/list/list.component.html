@@ -1,1 +1,26 @@
-<app-contact-list-item *ngFor="let contact of contacts" [contact]="contact"></app-contact-list-item>
+<table class="table">
+    <thead>
+        <tr>
+            <th>First</th>
+            <th>Last</th>
+            <th>Email</th>
+            <th>Street</th>
+            <th>City</th>
+            <th>State</th>
+            <th>Zip</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let contact of contacts">
+            <td>{{contact.firstName}}</td>
+            <td>{{contact.lastName}}</td>
+            <td>{{contact.email}}</td>
+            <td>{{contact.street}}</td>
+            <td>{{contact.city}}</td>
+            <td>{{contact.state}}</td>
+            <td>{{contact.zip}}</td>
+            <td><a href="#" (click)="callDeleteContact(contact.uuid)">Delete</a></td>
+        </tr>
+    </tbody>
+</table>

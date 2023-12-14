@@ -1,3 +1,4 @@
 <ngb-alert *ngIf="showErrorFlag" type="danger" (closed)="close()">{{ result.CustomMessage }}</ngb-alert>
 <h1>Contacts</h1>
-<app-contact-list [contacts]="contacts"></app-contact-list>
+<app-contact-list [contacts]="contacts" [deleteContact]="deleteContact"
+    [contactService]="contactService"></app-contact-list>

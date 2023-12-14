@@ -18,7 +18,7 @@ export class ContactComponent implements OnInit {
   result?: any;
   showErrorFlag = false
 
-  constructor(private contactService: ContactService) {
+  constructor(protected contactService: ContactService) {
     this.showErrorFlag = false;
   }
 
@@ -34,6 +34,19 @@ export class ContactComponent implements OnInit {
           console.log(res.customMessage)
         else {
           this.result = res as ApiResponse<Contact[]>;
+          this.showError();
+        }
+      })
+  }
+
+  deleteContact(uuid: string) {
+    debugger;
+    this.contactService.delete(uuid)
+      .subscribe(res => {
+        if (res.code == 200)
+          this.contacts = this.contacts.filter(c => c.uuid !== uuid);
+        else {
+          this.result = res as ApiResponse<Contact>;
           this.showError();
         }
       })
