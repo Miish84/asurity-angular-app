@@ -9,7 +9,7 @@ import { EnvironmentConfig } from '../../environment.config';
 })
 export class ContactService extends GenericDataService<Contact> {
 
-  constructor(private http: HttpClient) {
+  constructor(http: HttpClient) {
     super(http, `${EnvironmentConfig.dev.apiUrl}/contact`, Contact);
   }
 }
