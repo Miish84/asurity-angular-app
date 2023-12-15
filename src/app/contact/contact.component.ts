@@ -17,7 +17,7 @@ import { FormComponent } from './form/form.component';
 })
 export class ContactComponent implements OnInit {
   contacts: Contact[] = [];
-  selectedContact: Contact = null!;
+  selectedContact: Contact | null = null;
   result?: any;
   showErrorFlag = false
   protected modalService = inject(NgbModal);
@@ -28,8 +28,6 @@ export class ContactComponent implements OnInit {
   }
 
   ngAfterContentChecked() {
-    // this.sampleViewModel.DataContext = this.DataContext;
-    // this.sampleViewModel.Position = this.Position;
     this.cdRef.detectChanges();
   }
 
@@ -82,12 +80,15 @@ export class ContactComponent implements OnInit {
     this.selectedContact = contact;
   }
 
-  open(content: TemplateRef<any>) {
+  open(content: TemplateRef<any>, reset = false) {
+    if (reset)
+      this.selectedContact = null;
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' }).result;
   }
 
   close() {
     this.showErrorFlag = false;
+    this.selectedContact = {} as Contact;
   }
 
   private showError() {

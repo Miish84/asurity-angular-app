@@ -1,26 +1,48 @@
 <form [formGroup]="contactForm" (ngSubmit)="onSubmit()">
-    <label for="firstName">First Name:</label>
-    <input type="text" id="firstName" formControlName="firstName">
+    <div style="margin: 0 20px; display: flex; justify-content: space-between;">
+        <label for="firstName">First Name:</label>
+        <input type="text" id="firstName" formControlName="firstName">
+    </div>
+    <div style="margin: 0 20px; display: flex; justify-content: space-between;">
+        <label for="lastName">Last Name:</label>
+        <input type="text" id="lastName" formControlName="lastName">
+    </div>
 
-    <label for="lastName">Last Name:</label>
-    <input type="text" id="lastName" formControlName="lastName">
+    <div style="margin: 0 20px; display: flex; justify-content: space-between;">
+        <label for="email">Email:</label>
+        <input type="email" id="email" formControlName="email">
+    </div>
+    <div style="margin: 0 20px; display: flex; justify-content: space-between;">
+        <label for="street">Street:</label>
+        <input type="text" id="street" formControlName="street">
+    </div>
 
-    <label for="email">Email:</label>
-    <input type="email" id="email" formControlName="email">
+    <div style="margin: 0 20px; display: flex; justify-content: space-between;">
+        <label for="city">City:</label>
+        <input type="text" id="city" formControlName="city">
+    </div>
+    <div style="margin: 0 20px; display: flex; justify-content: space-between;">
+        <label for="state">Select a State:</label>
+        <select id="state" formControlName="state">
+            <option *ngFor="let state of states" [value]="state.value">{{ state.name }}</option>
+        </select>
+    </div>
 
-    <label for="street">Street:</label>
-    <input type="text" id="street" formControlName="street">
-
-    <label for="city">City:</label>
-    <input type="text" id="city" formControlName="city">
-
-    <label for="state">State:</label>
-    <input type="text" id="state" formControlName="state">
-
-    <label for="zip">ZIP:</label>
-    <input type="number" id="zip" formControlName="zip">
+    <div style="margin: 0 0 8px 20px;">
+        <label for="frequency">Contact Frequency:</label>
+        <select id="frequency" formControlName="frequency">
+            <option value="" selected></option>
+            <option value="1">Contact only about account information</option>
+            <option value="2">OK to contact with marketing information</option>
+            <option value="3">OK to contact with third-party marketing information</option>
+        </select>
+    </div>
+    <div style="margin: 0 20px; display: flex; justify-content: space-between;">
+        <label for="zip">ZIP:</label>
+        <input type="number" id="zip" formControlName="zip">
+    </div>
 
     <input hidden type="text" id="uuid" formControlName="uuid">
 
-    <button type="submit">Submit</button>
+    <button type="submit" class="btn btn-primary">Submit</button>
 </form>

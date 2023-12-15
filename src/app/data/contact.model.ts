@@ -7,7 +7,8 @@ export class Contact {
     public street!: string;
     public city!: string;
     public state!: string;
-    public zip!: number;
+    public zip?: number | null;
+    public frequency?: number | null;
 
     constructor(model?: Partial<Contact>) {
         if (model)

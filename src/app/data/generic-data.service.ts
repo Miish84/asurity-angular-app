@@ -15,7 +15,7 @@ export abstract class GenericDataService<T> {
     private httpClient: HttpClient,
     protected apiUrl: string,
     private tConstructor: { new(model: Partial<T>): T }
-  ) { } //second param removed: , ...args: unknown[]
+  ) { }
 
   public get(): Observable<ApiResponse<T[]>> {
     return this.httpClient
@@ -50,14 +50,6 @@ export abstract class GenericDataService<T> {
         })
       );
   }
-
-  // public getByUuid(uuid: string): Observable<T> {
-  //   return this.httpClient
-  //     .get<T>(`${this.apiUrl}/${uuid}`)
-  //     .pipe(
-  //       map((result: any) => new this.tConstructor(result.payload as Partial<T>))
-  //     );
-  // }
 
   public delete(uuid: string): Observable<ApiResponse<T>> {
     debugger;
