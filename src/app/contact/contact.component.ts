@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, TemplateRef } from '@angular/core';
+import { Component, OnInit, inject, TemplateRef, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { NgbAlert, NgbModal } from '@ng-bootstrap/ng-bootstrap'
 import { ApiResponse } from '../data/apiResponse.model';
 import { NgIf } from '@angular/common';
@@ -20,10 +20,17 @@ export class ContactComponent implements OnInit {
   selectedContact: Contact = null!;
   result?: any;
   showErrorFlag = false
-  private modalService = inject(NgbModal);
+  protected modalService = inject(NgbModal);
+  @ViewChild('content') modal!: TemplateRef<any>;
 
-  constructor(protected contactService: ContactService) {
+  constructor(protected contactService: ContactService, private cdRef: ChangeDetectorRef) {
     this.showErrorFlag = false;
+  }
+
+  ngAfterContentChecked() {
+    // this.sampleViewModel.DataContext = this.DataContext;
+    // this.sampleViewModel.Position = this.Position;
+    this.cdRef.detectChanges();
   }
 
   ngOnInit(): void {
@@ -55,8 +62,20 @@ export class ContactComponent implements OnInit {
       })
   }
 
-  handleSubmitResult(contacts: Contact[]) {
-    this.contacts = contacts;
+  handleSubmitResult(response: ApiResponse<Contact[]>) {
+    this.result = response;
+    this.modalService.dismissAll();
+    if (response.code !== 200 || !response.payload) {
+      this.showError();
+    } else {
+      this.contacts = response.payload;
+    }
+
+  }
+
+  handleRowClick(contact: Contact) {
+    this.selectedContact = contact;
+    this.open(this.modal);
   }
 
   selectContact(contact: Contact) {

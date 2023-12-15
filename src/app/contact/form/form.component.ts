@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, OnChanges, SimpleChanges } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Contact } from '../../data/contact.model';
 import { ContactService } from '../contact.service';
@@ -11,25 +11,34 @@ import { ApiResponse } from '../../data/apiResponse.model';
   templateUrl: './form.component.html',
   styleUrl: './form.component.scss'
 })
-export class FormComponent {
+export class FormComponent implements OnChanges {
   @Input() contact!: Contact;
   @Input() contactService!: ContactService;
-  @Output() submitEvent = new EventEmitter<Contact[]>;
+  @Output() submitEvent = new EventEmitter<ApiResponse<Contact[]>>;
   contactForm: FormGroup;
   contactFormObject: any
 
   constructor(private fb: FormBuilder) {
-    this.contactFormObject = {
-      uuid: [this.contact.uuid || ''],
-      firstName: [this.contact.firstName || '', Validators.required],
-      lastName: [this.contact.lastName || '', Validators.required],
-      email: [this.contact.email || '', [Validators.required, Validators.email]],
-      street: [this.contact.street || ''],
-      city: [this.contact.city || ''],
-      state: [this.contact.state || ''],
-      zip: [this.contact.zip || '']
-    }
+    this.contactFormObject = this.setFormObject(this.contact);
+    this.contactForm = this.fb.group(this.contactFormObject);
+  }
 
+  setFormObject(contact: Contact): any {
+    return {
+      uuid: [contact?.uuid || ''],
+      firstName: [contact?.firstName || '', Validators.required],
+      lastName: [contact?.lastName || '', Validators.required],
+      email: [contact?.email || '', [Validators.required, Validators.email]],
+      street: [contact?.street || ''],
+      city: [contact?.city || ''],
+      state: [contact?.state || ''],
+      zip: [contact?.zip || '']
+    }
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    const contact = changes['contact']?.currentValue;
+    this.contactFormObject = this.setFormObject(contact);
     this.contactForm = this.fb.group(this.contactFormObject);
   }
 
@@ -47,18 +56,14 @@ export class FormComponent {
           .subscribe(res => {
             this.submitEventAction(res);
           })
-        // Form is invalid, handle validation errors
       }
     } else {
-      this.submitEvent.error("Please review the form and correct any mistakes");
+      const response = new ApiResponse<Contact[]>("Form could not validate. Please check values and try again.")
+      this.submitEvent.emit(response);
     }
   }
 
   private submitEventAction(res: ApiResponse<Contact[]>) {
-    if (res.code == 200)
-      this.submitEvent.emit(res.payload as Contact[])
-    else {
-      this.submitEvent.error(null);
-    }
+    this.submitEvent.emit(res);
   }
 }

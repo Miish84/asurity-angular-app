@@ -1,7 +1,7 @@
-<ngb-alert *ngIf="showErrorFlag" type="danger" (closed)="close()">{{ result.CustomMessage }}</ngb-alert>
+<ngb-alert *ngIf="showErrorFlag" type="danger" (closed)="close()">{{ result.customMessage }}</ngb-alert>
 <h1>Contacts</h1>
-<app-contact-list [contacts]="contacts" [selectContact]="selectContact" [deleteContact]="deleteContact"
-    [contactService]="contactService">
+<app-contact-list [contacts]="contacts" [deleteContact]="deleteContact" [contactService]="contactService"
+    (rowClickEvent)="handleRowClick($event)">
 </app-contact-list>
 
 <ng-template #content let-modal>
@@ -12,9 +12,6 @@
     <div class="modal-body">
         <app-contact-form [contact]="selectedContact" [contactService]="contactService"
             (submitEvent)="handleSubmitResult($event)"></app-contact-form>
-    </div>
-    <div class="modal-footer">
-        <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click')">Save</button>
     </div>
 </ng-template>
 
