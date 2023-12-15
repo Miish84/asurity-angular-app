@@ -24,17 +24,14 @@
     <div style="margin: 0 20px; display: flex; justify-content: space-between;">
         <label for="state">Select a State:</label>
         <select id="state" formControlName="state">
-            <option *ngFor="let state of states" [value]="state.value">{{ state.name }}</option>
+            <option *ngFor="let state of states" [value]="state.abbreviation">{{ state.name }}</option>
         </select>
     </div>
 
     <div style="margin: 0 0 8px 20px;">
         <label for="frequency">Contact Frequency:</label>
         <select id="frequency" formControlName="frequency">
-            <option value="" selected></option>
-            <option value="1">Contact only about account information</option>
-            <option value="2">OK to contact with marketing information</option>
-            <option value="3">OK to contact with third-party marketing information</option>
+            <option *ngFor="let freq of contactFrequencies" [value]="freq.id">{{ freq.description }}</option>
         </select>
     </div>
     <div style="margin: 0 20px; display: flex; justify-content: space-between;">

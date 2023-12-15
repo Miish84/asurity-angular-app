@@ -1,15 +1,13 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/internal/Observable';
 import { map } from 'rxjs/internal/operators/map';
-import { catchError, throwError } from 'rxjs';
 import { ApiResponse } from './apiResponse.model';
-import { Contact } from './contact.model';
 
 @Injectable({
   providedIn: 'root'
 })
-export abstract class GenericDataService<T> {
+export abstract class GenericDataService<T extends { uuid: string }> {
 
   constructor(
     private httpClient: HttpClient,
@@ -29,9 +27,9 @@ export abstract class GenericDataService<T> {
       );
   }
 
-  public create(contact: Contact): Observable<ApiResponse<T[]>> {
+  public create(item: T): Observable<ApiResponse<T[]>> {
     return this.httpClient
-      .post(`${this.apiUrl}`, contact)
+      .post(`${this.apiUrl}`, item)
       .pipe(
         map((result: any) => {
           let response = result as ApiResponse<T[]>;
@@ -40,9 +38,9 @@ export abstract class GenericDataService<T> {
       );
   }
 
-  public update(contact: Contact): Observable<ApiResponse<T[]>> {
+  public update(item: T): Observable<ApiResponse<T[]>> {
     return this.httpClient
-      .put(`${this.apiUrl}/${contact.uuid}`, contact)
+      .put(`${this.apiUrl}/${item.uuid}`, item)
       .pipe(
         map((result: any) => {
           let response = result as ApiResponse<T[]>;
@@ -52,7 +50,6 @@ export abstract class GenericDataService<T> {
   }
 
   public delete(uuid: string): Observable<ApiResponse<T>> {
-    debugger;
     return this.httpClient
       .delete(`${this.apiUrl}/${uuid}`)
       .pipe(

@@ -1,11 +1,13 @@
 import { Component, EventEmitter, Input, Output, OnChanges, SimpleChanges } from '@angular/core';
-import { CommonModule, KeyValue, KeyValuePipe } from '@angular/common';
-import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AsyncValidatorFn, AbstractControl, ValidationErrors } from '@angular/forms';
+import { CommonModule, KeyValuePipe } from '@angular/common';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Contact } from '../../data/contact.model';
 import { ContactService } from '../contact.service';
 import { ApiResponse } from '../../data/apiResponse.model';
-import { States } from '../../shared/states';
-import { Observable, map, catchError, of } from 'rxjs'
+import { Observable, of } from 'rxjs'
+import { LookupsService } from '../../shared/lookups.service';
+import { ContactFrequency } from '../../data/contact-frequency.model';
+import { State } from '../../data/state.model';
 
 @Component({
   selector: 'app-contact-form',
@@ -20,11 +22,14 @@ export class FormComponent implements OnChanges {
   @Output() submitEvent = new EventEmitter<ApiResponse<Contact[]>>;
   contactForm: FormGroup;
   contactFormObject: any
-  states: any[] = States;
+  states!: State[];
+  contactFrequencies!: ContactFrequency[];
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, protected lookupService: LookupsService) {
     this.contactFormObject = this.setFormObject(this.contact);
     this.contactForm = this.fb.group(this.contactFormObject);
+    lookupService.getStates().subscribe(res => this.states = res.payload);
+    lookupService.getContactFrequencies().subscribe(res => this.contactFrequencies = res.payload);
   }
 
   setFormObject(contact: Contact | null): any {
@@ -72,7 +77,6 @@ export class FormComponent implements OnChanges {
     Observable<ValidationErrors | null> {
     const state: string = control.value;
 
-    debugger;
     if (state.length != 2 && state.length != 0) {
       // Emit an object with a validation error.
       return of({ 'notState': true });
@@ -80,35 +84,6 @@ export class FormComponent implements OnChanges {
     // Emit null, to indicate no error occurred.
     return of(null);
   }
-
-  private stateIsValid(abbreviation: string): boolean {
-    return this.states.hasOwnProperty(abbreviation);
-  }
-
-  // asyncStateValidator(): AsyncValidatorFn {
-  //   return (control: AbstractControl): Observable<ValidationErrors | null> => {
-  //     const stateAbbreviation = control.value;
-
-  //     return this.statesService.checkStateValidity(stateAbbreviation).pipe(
-  //       map(isValid => (isValid ? null : { invalidState: true })),
-  //       catchError(() => of({ invalidState: true }))
-  //     );
-  //   };
-  // }
-
-  // asyncStateValidator(): AsyncValidatorFn {
-  //   return (control: FormControl) => {
-  //     const stateAbbreviation = control.value;
-
-  //     return this.statesService.checkStateValidity(stateAbbreviation).toPromise()
-  //       .then(isValid => {
-  //         return isValid ? null : { invalidState: true };
-  //       })
-  //       .catch(() => {
-  //         return { invalidState: true };
-  //       });
-  //   };
-  //}
 
   private submitEventAction(res: ApiResponse<Contact[]>) {
     this.submitEvent.emit(res);
