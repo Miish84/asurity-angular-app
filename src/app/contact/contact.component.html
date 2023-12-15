@@ -1,4 +1,21 @@
 <ngb-alert *ngIf="showErrorFlag" type="danger" (closed)="close()">{{ result.CustomMessage }}</ngb-alert>
 <h1>Contacts</h1>
-<app-contact-list [contacts]="contacts" [deleteContact]="deleteContact"
-    [contactService]="contactService"></app-contact-list>
+<app-contact-list [contacts]="contacts" [selectContact]="selectContact" [deleteContact]="deleteContact"
+    [contactService]="contactService">
+</app-contact-list>
+
+<ng-template #content let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">Profile update</h4>
+        <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <app-contact-form [contact]="selectedContact" [contactService]="contactService"
+            (submitEvent)="handleSubmitResult($event)"></app-contact-form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark" (click)="modal.close('Save click')">Save</button>
+    </div>
+</ng-template>
+
+<button class="btn btn-lg btn-outline-primary" (click)="open(content)">Create Contact</button>

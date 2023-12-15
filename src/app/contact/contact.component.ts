@@ -1,22 +1,26 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject, TemplateRef } from '@angular/core';
+import { NgbAlert, NgbModal } from '@ng-bootstrap/ng-bootstrap'
+import { ApiResponse } from '../data/apiResponse.model';
+import { NgIf } from '@angular/common';
+
 import { ListComponent } from './list/list.component';
 import { ContactService } from './contact.service';
 import { Contact } from '../data/contact.model';
-import { NgbAlert } from '@ng-bootstrap/ng-bootstrap'
-import { ApiResponse } from '../data/apiResponse.model';
-import { NgIf } from '@angular/common';
+import { FormComponent } from './form/form.component';
 
 @Component({
   selector: 'app-contacts',
   standalone: true,
-  imports: [ListComponent, NgbAlert, NgIf],
+  imports: [ListComponent, FormComponent, NgbAlert, NgIf],
   templateUrl: './contact.component.html',
   styleUrl: './contact.component.scss'
 })
 export class ContactComponent implements OnInit {
   contacts: Contact[] = [];
+  selectedContact: Contact = null!;
   result?: any;
   showErrorFlag = false
+  private modalService = inject(NgbModal);
 
   constructor(protected contactService: ContactService) {
     this.showErrorFlag = false;
@@ -40,7 +44,6 @@ export class ContactComponent implements OnInit {
   }
 
   deleteContact(uuid: string) {
-    debugger;
     this.contactService.delete(uuid)
       .subscribe(res => {
         if (res.code == 200)
@@ -50,6 +53,18 @@ export class ContactComponent implements OnInit {
           this.showError();
         }
       })
+  }
+
+  handleSubmitResult(contacts: Contact[]) {
+    this.contacts = contacts;
+  }
+
+  selectContact(contact: Contact) {
+    this.selectedContact = contact;
+  }
+
+  open(content: TemplateRef<any>) {
+    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' }).result;
   }
 
   close() {

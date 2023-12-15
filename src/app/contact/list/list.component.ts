@@ -14,6 +14,7 @@ export class ListComponent {
   @Input() contacts: Contact[] = [];
   @Input() deleteContact!: (uuid: string) => void;
   @Input() contactService!: ContactService;
+  @Input() selectContact!: (contact: Contact) => void;
 
   callDeleteContact(uuid: string): void {
     if (this.deleteContact) {

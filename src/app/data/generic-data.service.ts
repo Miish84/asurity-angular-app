@@ -4,6 +4,7 @@ import { Observable } from 'rxjs/internal/Observable';
 import { map } from 'rxjs/internal/operators/map';
 import { catchError, throwError } from 'rxjs';
 import { ApiResponse } from './apiResponse.model';
+import { Contact } from './contact.model';
 
 @Injectable({
   providedIn: 'root'
@@ -23,6 +24,28 @@ export abstract class GenericDataService<T> {
         map((result: any) => {
           let response = result as ApiResponse<T[]>;
           response.payload = result.payload?.map((i: Partial<T>) => new this.tConstructor(i))
+          return response;
+        })
+      );
+  }
+
+  public create(contact: Contact): Observable<ApiResponse<T[]>> {
+    return this.httpClient
+      .post(`${this.apiUrl}`, contact)
+      .pipe(
+        map((result: any) => {
+          let response = result as ApiResponse<T[]>;
+          return response;
+        })
+      );
+  }
+
+  public update(contact: Contact): Observable<ApiResponse<T[]>> {
+    return this.httpClient
+      .put(`${this.apiUrl}/${contact.uuid}`, contact)
+      .pipe(
+        map((result: any) => {
+          let response = result as ApiResponse<T[]>;
           return response;
         })
       );
